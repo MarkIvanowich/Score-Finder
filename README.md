@@ -1,3 +1,5 @@
+<img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Archery_Target_80cm.svg" alt="Archery Target 80cm.svg" width="145" height="145">
+
 # Score-Finder
 
 Simple python script to find possible permutations of a ten-ring
@@ -76,12 +78,19 @@ of 150 shots fired across 10 stages. If all 150 shots were on one paper target,
 there will be more hole than paper. This is no obstacle for mathematics or
 statistics.
 
-```python score_finder.py 1418 48 150 f
+```
+python score_finder.py 1418 48 150 f
 ```
 Shows all permutations of 150 shots to make a score of 1418 points, with a 48
 'X'-count. Does not show permutations where hits were missed.
 
 
+
 ## Licensing
+Image in this README is [CC BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5/) by Alberto Barbati
+1 June 2006
+[Original image: Archery Target 80cm.svg](https://commons.wikimedia.org/wiki/File:Archery_Target_80cm.svg)
+
+
 
 The code in this project is licensed under MIT license. Please find included LICENSE file for complete details.
