@@ -27,7 +27,9 @@ permute an 'X'-count.
 ### Usage
 
 Within the directory of the `score_finder.py` file, the script should be used
-as `python score_finder.py SCORE X_COUNT SHOTS SHOW_ZEROS`. Arguments are as follows:
+as:
+
+`python score_finder.py SCORE X_COUNT SHOTS SHOW_ZEROS`
 
 #### SCORE
 
