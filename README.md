@@ -8,7 +8,7 @@ scorecard/target in pistol or archery competitions.
 In archery and shooting sports, a ten-ring target is used as a metric for
 accuracy. In the centre of the target/scorecard, there is the 'X'. A competitor
 has the goal to hit the 'X' as many times as possible in their given round.
-Outwards from the centre, are nine additional rings descending in score value
+Outwards from the centre, are ten additional rings descending in score value
 from 10. Both the 'X' and the 10 ring are worth 10 points. Since a score is the
 summation of each hit on each ring, the 'X' count is the most valuable metric
 for settling ties of equal score.
