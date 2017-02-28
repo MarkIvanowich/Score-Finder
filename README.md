@@ -31,6 +31,20 @@ as:
 
 `python score_finder.py SCORE X_COUNT SHOTS SHOW_ZEROS`
 
+### Example
+
+Numerous targets may be combined to find permutations which are physically
+unfeasible: In PPC (Precision Pistol Competitions) matches there are a total
+of 150 shots fired across 10 stages. If all 150 shots were on one paper target,
+there will be more hole than paper. This is no obstacle for mathematics or
+statistics.
+
+```
+python score_finder.py 1418 48 150 f
+```
+Shows all permutations of 150 shots to make a score of 1418 points, with a 48
+'X'-count. Does not show permutations where hits were missed.
+
 #### SCORE
 
 Type: `Integer`  
@@ -71,20 +85,6 @@ Set to `t`, `1`, or `y` to enable. Enabled if user desires permutations where
 some shots fired missed the target, and are worth zero points.
 These permutations are printed to the screen after every non-miss permutation
 has been found. This also sorts results from best-to-worst case scenarios.
-
-### Example
-
-Numerous targets may be combined to find permutations which are physically
-unfeasible: In PPC (Precision Pistol Competitions) matches there are a total
-of 150 shots fired across 10 stages. If all 150 shots were on one paper target,
-there will be more hole than paper. This is no obstacle for mathematics or
-statistics.
-
-```
-python score_finder.py 1418 48 150 f
-```
-Shows all permutations of 150 shots to make a score of 1418 points, with a 48
-'X'-count. Does not show permutations where hits were missed.
 
 
 
