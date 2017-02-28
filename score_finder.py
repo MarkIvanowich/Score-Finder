@@ -167,7 +167,7 @@ def find_distri(score, x, shot_count, show_possible):
             distri[TEN_SCORE] += 1
 
         #CARRY
-        for n in range(TEN_SCORE,ONE_SCORE):
+        for n in range(TEN_SCORE,ZERO_SCORE):
             '''
             Basic left-to-right carrying.
 
