@@ -190,7 +190,7 @@ def find_distri(score, x, shot_count, show_possible):
                 distri[n] = 0
                     #we only need to change the current column to 0, for the same reason as above.
                 distri[n+1] +=1
-                    #range(x,y) stops before y. [n+1] will be within bounds of list if y is one less than upper bounds of our list
+                    #range(x,y) stops before y. [n+1] will be within bounds of list if y is equal upper bounds of our list. "for n in range(1,10): print n" will never say "10"
                 overflow_column = n
                     #latest column to CARRY from, useful for when we force carry.
         #END CARRY
