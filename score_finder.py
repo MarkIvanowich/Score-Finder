@@ -15,20 +15,27 @@ else:
 #Constants to help with code coherence
 X_SCORE = 0
 TEN_SCORE = 1
+NINE_SCORE = 2
 ONE_SCORE = 10
 ZERO_SCORE = 11
 
 
 def find_score(distri):
-    #Calculates a score of a given distribution
+    '''
+    Calculates a score of a given distribution
+    In our distributions, each column/element is weighted differently. Two
+    elements are worth 10 points each, and all others descend. Some simple
+    math can create scalars that make this weighting.
+    '''
+
     score = 0
     score += distri[X_SCORE]*10
         #X-Count is also worth 10
     for n in range(TEN_SCORE,ZERO_SCORE):
         score +=distri[n]*(11-n)
         '''
-        A distribution which each element is indexed from left-to-right as
-        the value decreases left-to-right would be
+        A distribution which each element is indexed (numbered) from
+        left-to-right as the value decreases left-to-right would be:
 
         this_element_scalar = (maximum_scalar - this_element_index)
         element = this_element_value * this_element_scalar
@@ -64,11 +71,36 @@ bad_distris=[]
     #Distributions with missed shots.
 
 def find_distri(score, x, shot_count, show_possible):
-    #Main Function. Increments permutations left to right.
+    '''
+    Main Function. Increments permutations left to right.
+
+    With each distribution represented as an 11-element list/array,
+    (One element/column per ring and centre X) we will literate through
+    distributions just like how you would count the decimal number 0 to 200:
+    Each 'digit' has a value. As you exaust one of these digits, you reset it
+    to 0 and increase its neighbour. (9 increases to 10)
+
+    As a competitor has the centre of the target as goal, they would hit
+    the bullsye or 'X' exponentially more likely than the outer rings.
+    With our distributions organised with the 'X' as the first element in our
+    list, it makes more sense to iterate or 'count up' through our distributions
+    from centre to the outer rings. Given a score, this also would present
+    results more likely of an experienced competitor first. For inexperienced
+    competitors, the assumption of perfection is observed as boost to morale.
+    This works around the fact that inaccurate scores would take longer to
+    find as we iterate.
+    (Thankfully, I have data from a Grand Master PPC shooter to test from.)
+
+    We will iterate from [X,0,0,0,0,0,0,0,0,0,0,0] to
+    [X,MAX,MAX,MAX,MAX,MAX,MAX,MAX,MAX,MAX,MAX,0] where MAX is the number of
+    shots on target minus the 'X'-count. The last element is the
+    number of missed shots and will not be iterated through. Our logic satisfies
+    distributions with missed shots early on. If we did iterate through the
+    missed shots, our code would take somewhere around
+    (SHOT_COUNT - X_COUNT) times as long to find.
+    '''
     random_pass = 0
         #Number of failed distributions since last successful: supplementary, resets every 1Mil
-    random_count = 0
-        #Number of million failed distributions, successfully: supplementary, never resets
     fcarry_count = 0
         #Number of branches of permutations we skipped: supplementary, intriguing statistic, never resets
     biggest_score = 0
@@ -88,7 +120,9 @@ def find_distri(score, x, shot_count, show_possible):
     overflow_column = 0
         #Last column where we had a carry.
     while distri[ZERO_SCORE]<=0:
-        #We will stop once the Zero element of the distribution increases. There is other logic for distributions with missed shots.
+        #We will stop once the Zero element of the distribution increases. Logic for distributions with missed shots are nested further.
+        # Our main loop.
+
         random_pass += 1
         skip_flag = False
         this_shot_sum = 0
@@ -108,9 +142,10 @@ def find_distri(score, x, shot_count, show_possible):
             distribution, due to skip_flag.
 
             If possible = 5
-            [0,3,3,0,0] #=> A total of 6 out of 5 possible shots. Invalid.
-            Then we should ignore the rest of the [0,3,3,0,0] branch as we know
-            [0,3,3,1,0] through [0,3,3,5,5] are invalid.
+            [0,3,3] #=> A total of 6 out of 5 possible shots. Invalid.
+            Then we should ignore the rest of the [X,X,3] branch as we know
+            [0,3,3] through [5,5,3] are invalid. Jump to [0,0,4] as if we just
+            finished counting [5,5,3].
 
             To ignore, we perform a 'force carry'. As the decimal number 199
             counts up to 200, the leftmost digit increases, and all digits to
@@ -132,48 +167,103 @@ def find_distri(score, x, shot_count, show_possible):
             distri[TEN_SCORE] += 1
 
         #CARRY
-        for n in range(ONE_SCORE,X_SCORE,-1):
-            #Basic left-to-right counting.
+        for n in range(TEN_SCORE,ONE_SCORE):
+            '''
+            Basic left-to-right carrying.
+
+            After careful study of this context, carrying does not need to be
+            recursive, as both the forced and unforced carries are conditional
+            that columns (individually or collectively) must not ever surpass
+            the possible number of shots.
+            Thus there will only ever be maximum of one forced and one unforced
+            carry per pass of our main loop.
+
+            Example:
+            If possible = 3
+            [1,4,0,4,0] would never reach [1,0,1,4,0]
+            as forced carry would have already changed to [0,0,0,0,1].
+            Additionally, the existence of [1,4,0,4,0] would be paradoxical, as
+            a previous forced or unforced carry would have caught any
+            distribution of [X,X,X,4,0].
+            '''
             if distri[n] > possible: #overflow
                 distri[n] = 0
+                    #we only need to change the current column to 0, for the same reason as above.
                 distri[n+1] +=1
-                    #range(x,y) stops before y. [n+1] will be within bounds of list if y is one less than upper limit
+                    #range(x,y) stops before y. [n+1] will be within bounds of list if y is one less than upper bounds of our list
                 overflow_column = n
-                    #latest column to CARRY from, useful for when we force carry
+                    #latest column to CARRY from, useful for when we force carry.
         #END CARRY
 
-#TODO: COMMENTS FROM HERE ON
-
+        #TESTING LOGIC
         dist_sum = sum(distri)
+            #This distribution's total number of shots.
         this_score = find_score(distri)
+            #This distribution's score, as defined by find_score function.
 
         backtick("Working...")
+            #Print out to the bottom of the screen the time and a message. Proves the script hasn't froze.
 
         if this_score > biggest_score:
+            #Store our supplementary statistic of greatest score
             biggest_score = this_score
         if dist_sum > biggest_sum:
+            #Store our supplementary statistic of greatest sum
             biggest_sum = dist_sum
 
         if random_pass == 1000000:
+            #Every 1 Million failed distributions, print out some statistics to keep us busy.
             random_pass = 0
-            random_count += 1
-            print "I'm still working... NOP-"+str(random_count)+"Mil-BiggestSum:"+str(biggest_sum)+"-BiggestScore:"+str(biggest_score)+"-SKIPS:"+str(fcarry_count)+"--"+str(distri)+" SC:"+str(this_score)+" SUM:"+str(dist_sum)
+                #Random_pass is the counter for each individual distributions
+            print "I'm still working... Mil-BiggestSum:"+str(biggest_sum)+"-BiggestScore:"+str(biggest_score)+"-SKIPS:"+str(fcarry_count)+"--"+str(distri)+" SC:"+str(this_score)+" SUM:"+str(dist_sum)
+                '''
+                Prints as follows:
+                - "I'm still working..."
+                - "Mil-"        : One million distributions have failed our tests
+                - BiggestSum    : The tested distribution that had the most number of shots on target, however invalid
+                - BiggestScore  : The tested distribution that had the greatest score, however invalid
+                - SKIPS         : The number of times our code hs forced carried, avoiding entire invalid branches
+                - --            : The present distribution being tested, however invalid
+                - SC            : The score of present distribution, however invalid
+                - SUM            : The number of shots of present distribution, however invalid
+                '''
 
         #check results.
-        if find_score(distri)==score:
+        if this_score=score:
+            #This distribution's score is a match with our request
             if dist_sum==shot_count:
+                #Even the number of shots match up. This is possibly the distribution that made the score
                 print str(distri)+" SC:"+str(score)+" SUM:"+str(dist_sum)
-                random_count = 0
             elif dist_sum<shot_count:
+                '''
+                There is a possibility that an experienced competitor has missed
+                or lost shots on target. A misfire, hits on other competitors
+                targets are awarded zero points.
+
+                If the present distribution has fewer number of shots as hits,
+                but has an equal score, it is possible that the remaining shots
+                were all misses. Since a miss is zero points, we can put that
+                back into our results.
+                '''
                 distri2 = [0,0,0,0,0,0,0,0,0,0,0,0]
+                    #Creating a second distribution as not to alter the distribution we are iterating through
                 for n in range(0,12):
                     distri2[n]=distri[n]
+                    #Copy all the data from the first distribution into the second.
                 distri2[ZERO_SCORE] = (shot_count-dist_sum)
+                    #The difference between this distribution's shot count and the requested is equal to the number of missed shots. Place that into the ZERO_SCORE column.
                 bad_distris.append(distri2)
+                    #Take the distribution with missed shots and put it into the collection called bad_distris
+        #END TESTING LOGIC
+
     if(show_possible):
+        #If the user requested distributions with missed shots, print them out now, since we have iterated through all other possibilities.
         for n in bad_distris:
             this_sum = sum(n)
             this_zero = n[ZERO_SCORE]
             print "P:"+str(n)+" SC:"+str( find_score(n) )+" SUM:"+str( this_sum )+" HIT/MISS:"+str(this_sum-this_zero)+"/"+str(this_zero)
+                #Print out the missed shot distributions differently than those which are a 100% match, as these are not as desireable.
+
 
 find_distri(int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]), show_possible)
+    #Point of entry, pulls command line arguments and starts the main function.
