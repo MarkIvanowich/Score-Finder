@@ -216,20 +216,20 @@ def find_distri(score, x, shot_count, show_possible):
             random_pass = 0
                 #Random_pass is the counter for each individual distributions
             print "I'm still working... Mil-BiggestSum:"+str(biggest_sum)+"-BiggestScore:"+str(biggest_score)+"-SKIPS:"+str(fcarry_count)+"--"+str(distri)+" SC:"+str(this_score)+" SUM:"+str(dist_sum)
-                '''
-                Prints as follows:
-                - "I'm still working..."
-                - "Mil-"        : One million distributions have failed our tests
-                - BiggestSum    : The tested distribution that had the most number of shots on target, however invalid
-                - BiggestScore  : The tested distribution that had the greatest score, however invalid
-                - SKIPS         : The number of times our code hs forced carried, avoiding entire invalid branches
-                - --            : The present distribution being tested, however invalid
-                - SC            : The score of present distribution, however invalid
-                - SUM            : The number of shots of present distribution, however invalid
-                '''
+            '''
+            Prints as follows:
+            - "I'm still working..."
+            - "Mil-"        : One million distributions have failed our tests
+            - BiggestSum    : The tested distribution that had the most number of shots on target, however invalid
+            - BiggestScore  : The tested distribution that had the greatest score, however invalid
+            - SKIPS         : The number of times our code hs forced carried, avoiding entire invalid branches
+            - --            : The present distribution being tested, however invalid
+            - SC            : The score of present distribution, however invalid
+            - SUM            : The number of shots of present distribution, however invalid
+            '''
 
         #check results.
-        if this_score=score:
+        if this_score==score:
             #This distribution's score is a match with our request
             if dist_sum==shot_count:
                 #Even the number of shots match up. This is possibly the distribution that made the score
