@@ -2,6 +2,7 @@ import time, datetime
 import sys
 
 show_possible = False
+misses = 0
 
 if(len(sys.argv)<=3):
     sys.exit("INVALID ARGUMENTS "+str(sys.argv))
@@ -9,8 +10,14 @@ if(len(sys.argv)<=3):
 else:
     if(len(sys.argv)>4):
         #Optional fifth argument shows permutations containing missed shots
-        if str(sys.argv[4]).lower()=="y" or str(sys.argv[4]).lower()=="t" or str(sys.argv[4])=="1":
+        if str(sys.argv[4]).lower()=="y" or str(sys.argv[4]).lower()=="t":
             show_possible= True
+        elif str(sys.argv[4]).lower()=="n" or str(sys.argv[4]).lower()=="f":
+            show_possible= False
+        else:
+            misses = int(sys.argv[4])
+            show_possible = False
+
 
 #Constants to help with code coherence
 X_SCORE = 0
@@ -113,13 +120,22 @@ def find_distri(score, x, shot_count, show_possible):
     distri[X_SCORE] = x
         #Set distribution with provided input. Will never change past this point.
     possible = shot_count-x
+    distri[ZERO_SCORE] = misses
+        #Set distribution with provided input. Will never change past this point.
+    print "There was a maximum of "+str(shot_count)+" shots."
+    possible = shot_count-x
         #If we know n shots were X_SCORE, that leaves n-X possible other shots.
-    print "There is a possible "+str(possible)+" shots left."
+    print "There is a possible "+str(possible)+" shots left after "+str(x)+" X hits."
+    if misses>0:
+        possible = possible-misses
+        #If we have provided missed shots, then we can eliminate them from the distribution
+    print "There is a possible "+str(possible)+" shots left after "+str(misses)+"  misses."
+
 
 
     overflow_column = 0
         #Last column where we had a carry.
-    while distri[ZERO_SCORE]<=0:
+    while distri[ZERO_SCORE]<=(misses):
         #We will stop once the Zero element of the distribution increases. Logic for distributions with missed shots are nested further.
         # Our main loop.
 
