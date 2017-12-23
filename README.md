@@ -1,5 +1,3 @@
-<img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Archery_Target_80cm.svg" alt="Archery Target 80cm.svg" width="145" height="145">
-
 # Score-Finder
 
 Simple python script to find possible permutations of a ten-ring
@@ -12,6 +10,11 @@ Outwards from the centre, are ten additional rings descending in score value
 from 10. Both the 'X' and the 10 ring are worth 10 points. Since a score is the
 summation of each hit on each ring, the 'X' count is the most valuable metric
 for settling ties of equal score.
+
+In Precison Pistol Competitions (PPC) as defined by the Canadian Police Combat 
+Association (CPCA) rulebook, only B29 targets are used. A B29 target is a
+silhouette with only 7 numbered rings plus the X bullseye. `score_finder_b29.py`
+should be the script used to calculate those dispersions.
 
 As the 'X'-count is the tie-settling metric for scores of equal value, another
 question arises: what permutations of hits on the target create that score?
@@ -29,7 +32,7 @@ permute an 'X'-count.
 Within the directory of the `score_finder.py` file, the script should be used
 as:
 
-`python score_finder.py SCORE X_COUNT SHOTS SHOW_ZEROS`
+`python score_finder.py SCORE X_COUNT SHOTS SHOW_ZEROS_OR_COUNT`
 
 ### Example
 
@@ -42,8 +45,14 @@ statistics.
 ```
 python score_finder.py 1418 48 150 f
 ```
-Shows all permutations of 150 shots to make a score of 1418 points, with a 48
-'X'-count. Does not show permutations where hits were missed.
+Shows all permutations of 150 shots on a ten-ring scorecard to make a score 
+of 1418 points, with a 48 'X'-count. Does not show permutations where hits were missed.
+
+```
+python score_finder_b29.py 1418 48 150 2
+```
+Shows all permutations of 150 shots on a B29 scorecard to make a score of 1418 points,
+with a 48 'X'-count, and maximum of 2 missed shots.
 
 #### SCORE
 
@@ -81,18 +90,15 @@ most independent variable in the system, thus the most important.
 Type: `Char`  
 Required: `false`
 
-Set to `t`, `1`, or `y` to enable. Enabled if user desires permutations where
-some shots fired missed the target, and are worth zero points.
-These permutations are printed to the screen after every non-miss permutation
-has been found. This also sorts results from best-to-worst case scenarios.
+Set to `t` or `y` to enable. Set to `f` or `n` to disable (default).
+Enabled if user desires permutations where some shots fired missed the target,
+and are worth zero points. Optionally, enter a numerical value for a predefined
+number of missed shots. (Including missed count does not increase or decrease
+search time compared to this setting being disabled.) These permutations are
+printed to the screen after every non-miss permutation has been found. This
+also sorts results from best-to-worst case scenarios.
 
 
 
 ## Licensing
-Image in this README is [CC BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5/) by Alberto Barbati
-1 June 2006
-[Original image: Archery Target 80cm.svg](https://commons.wikimedia.org/wiki/File:Archery_Target_80cm.svg)
-
-
-
 The code in this project is licensed under MIT license. Please find included LICENSE file for complete details.
